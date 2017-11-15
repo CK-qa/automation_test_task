@@ -20,7 +20,7 @@ public class CommonPage extends Configuration {
         super(driver);
     }
 
-    public String baseUrl = PropertyLoader.loadProperty("site.url");
+    String baseUrl = PropertyLoader.loadProperty("site.url");
 
     @FindBy(xpath = "//s-icon[contains(@icon,'user')]")
     public WebElement LOGIN_ICON;
@@ -38,10 +38,13 @@ public class CommonPage extends Configuration {
     private WebElement SELECTABLE_LOGIN_BTN;
     @FindBy(xpath = "//button[@data-test='auth-popup__submit']")
     private WebElement SUBMIT_BTN;
+    @FindBy(xpath = "//a[contains(@href,'logout')]")
+    private WebElement LOGOUT_BTN;
 
 
     WebDriverWait wait = new WebDriverWait(driver, 25);
 
+    //region Public methods
     public WebDriver getDriver() {
         try {
             driver.findElement(By.tagName("html"));
@@ -68,23 +71,29 @@ public class CommonPage extends Configuration {
         wait.until(ExpectedConditions.visibilityOf(LOGIN_ICON));
     }
 
+    public void logOut() {
+        LOGIN_ICON.click();
+        LOGOUT_BTN.click();
+        wait.until(ExpectedConditions.visibilityOf(LOGIN_BTN));
+        Assert.assertTrue("Login button is not visible", LOGIN_BTN.isDisplayed());
+    }
+
     public static String currentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
         Date date = new Date();
         return dateFormat.format(date);
     }
+    //endregion
 
     //region Private methods
     private void switchToLoginTab() {
         SELECTABLE_LOGIN_BTN.click();
     }
 
-    public boolean isLoginTabPreselected() {
+    private boolean isLoginTabPreselected() {
         return SELECTED_TAB.getText().contains("Log in");
     }
     //endregion
 
 }
-
-
 

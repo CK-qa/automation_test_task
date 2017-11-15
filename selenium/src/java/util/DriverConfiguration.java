@@ -12,6 +12,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import ru.stqa.selenium.factory.WebDriverPool;
 
 import java.io.File;
@@ -37,12 +38,15 @@ public class DriverConfiguration {
         }
         System.setProperty("user.country", "US");
         System.setProperty("webdriver.chrome.driver", "/Users/victoriabozhko/Selenium/chromedriver");
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--dns-prefetch-disable");
         capabilities = PropertyLoader.loadCapabilities();
 
         driver = WebDriverPool.DEFAULT.getDriver(capabilities);
 
         driver.manage().deleteAllCookies();
-        driver.manage().window().maximize();
+        driver.manage().window().fullscreen();
         driver.manage().timeouts().setScriptTimeout(15, TimeUnit.SECONDS);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }

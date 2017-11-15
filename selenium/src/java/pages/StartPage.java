@@ -13,4 +13,5 @@ public class StartPage extends CommonPage {
     public void open() {
         getDriver().get(baseUrl);
     }
+    //endregion
 }

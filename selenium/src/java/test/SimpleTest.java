@@ -1,12 +1,10 @@
 package test;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.support.PageFactory;
-import pages.LandingPage;
-import pages.NotesPage;
-import pages.ProjectsPage;
-import pages.StartPage;
+import pages.*;
 import util.DriverConfiguration;
 
 public class SimpleTest extends DriverConfiguration {
@@ -15,6 +13,7 @@ public class SimpleTest extends DriverConfiguration {
     private LandingPage landingPage;
     private NotesPage notesPage;
     private ProjectsPage projectsPage;
+    private CommonPage commonPage;
 
 
     @Before
@@ -23,6 +22,12 @@ public class SimpleTest extends DriverConfiguration {
         landingPage = PageFactory.initElements(driver, LandingPage.class);
         notesPage = PageFactory.initElements(driver, NotesPage.class);
         projectsPage = PageFactory.initElements(driver, ProjectsPage.class);
+        commonPage = PageFactory.initElements(driver, CommonPage.class);
+    }
+
+    @After
+    public void logout() {
+        commonPage.logOut();
     }
 
     @Test
@@ -43,7 +48,7 @@ public class SimpleTest extends DriverConfiguration {
     }
 
     @Test
-    public void createNewProject(){
+    public void createNewProject() {
         startPage.open();
         startPage.clickLoginButton();
         startPage.login("9nuzumaki@gmail.com", "pass4$emru$h");
@@ -52,8 +57,7 @@ public class SimpleTest extends DriverConfiguration {
         projectsPage.isProjectsPage();
         projectsPage.clickCreateNewProjectButton();
         projectsPage.isCreateProjectPopupDisplayed();
-        projectsPage.createProject();
+        projectsPage.fillAndSendProjectData();
         projectsPage.checkProjectIsCreated();
     }
 }
-

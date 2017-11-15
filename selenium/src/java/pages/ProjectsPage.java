@@ -1,10 +1,7 @@
 package pages;
 
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -29,6 +26,16 @@ public class ProjectsPage extends CommonPage {
     private WebElement PROJECT_TITLE;
     @FindBy(xpath = "//div[contains(@class,'page__out-of-limits')]")
     private WebElement MAXIMUM_PROJECTS_REACHED;
+    @FindBy(xpath = "//span[contains(@class,'-settings')]")
+    private WebElement SETTINGS_BTN;
+    @FindBy(xpath = "//a[contains(@class,'js-remove')]")
+    private WebElement REMOVE;
+    @FindBy(xpath = "//div[contains(@class,'-delete')]")
+    private WebElement DELETE_PROJECT_POPUP;
+    @FindBy(xpath = "//input[contains(@class,'remove-input')]")
+    private WebElement PROJECT_REMOVE_NAME_INPUT;
+    @FindBy(xpath = "//span[contains(text(),'Delete')]")
+    private WebElement DELETE_BTN;
 
     private final String pageUrl = "/projects";
 
@@ -36,12 +43,18 @@ public class ProjectsPage extends CommonPage {
         super(driver);
     }
 
+    //region Public methods
     public void isProjectsPage() {
         Assert.assertTrue("\"Projects\" page was not opened!", getDriver().getCurrentUrl().contains(pageUrl));
     }
 
     public void clickCreateNewProjectButton() {
-        CREATE_NEW_PROJECT_BTN.click();
+        if (getDriver().getCurrentUrl().contains("no-projects")) {
+            createProject();
+        } else {
+            deleteProject();
+            createProject();
+        }
     }
 
     public void isCreateProjectPopupDisplayed() {
@@ -58,7 +71,7 @@ public class ProjectsPage extends CommonPage {
     final String domain = "test.domain";
     final String name = "New Project";
 
-    public void createProject() {
+    public void fillAndSendProjectData() {
         PROJECT_DOMAIN_INPUT.sendKeys(domain);
         PROJECT_NAME_INPUT.sendKeys(name);
         SAVE_PROJECT_BTN.click();
@@ -68,5 +81,26 @@ public class ProjectsPage extends CommonPage {
     public void checkProjectIsCreated() {
         Assert.assertThat("Project name is not expected", PROJECT_TITLE.getAttribute("title"), containsString(name));
     }
-}
+    //endregion
 
+    //region Private methods
+    private void createProject() {
+        if (getDriver().getCurrentUrl().contains("no-projects")) {
+            CREATE_NEW_PROJECT_BTN.click();
+        }
+    }
+
+    private void deleteProject() {
+        SETTINGS_BTN.click();
+        wait.until(ExpectedConditions.elementToBeClickable(REMOVE));
+        //click to expandable section with js
+        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();",REMOVE);
+        REMOVE.click();
+
+        wait.until(ExpectedConditions.visibilityOf(DELETE_PROJECT_POPUP));
+        PROJECT_REMOVE_NAME_INPUT.sendKeys(name);
+        DELETE_BTN.click();
+        wait.until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(DELETE_BTN)));
+    }
+    //endregion
+}

@@ -18,7 +18,7 @@ public class LandingPage extends CommonPage {
     @FindBy(xpath = "//a[contains(@class, 'management-link')][contains(@href,'/projects')]")
     private WebElement PROJECTS_LINK;
 
-
+    //region Public methods
     public void isUserLoggedIn() {
         wait.until(ExpectedConditions.elementToBeClickable(LOGIN_ICON));
         Assert.assertTrue("User icon is not displayed after attempt to log in", LOGIN_ICON.isDisplayed());
@@ -27,5 +27,6 @@ public class LandingPage extends CommonPage {
     public void openProjectsPage() {
         PROJECTS_LINK.click();
     }
+    //endregion
 }
 

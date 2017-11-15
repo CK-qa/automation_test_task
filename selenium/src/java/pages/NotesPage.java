@@ -45,6 +45,7 @@ public class NotesPage extends CommonPage {
         super(driver);
     }
 
+    //region Public methods
     public void open() {
         getDriver().get(baseUrl + pageUrl);
     }
@@ -71,7 +72,9 @@ public class NotesPage extends CommonPage {
     public void checkNewNoteAppeared() {
         Assert.assertTrue("New note didn't appear in the table", isCreatedNotePresented());
     }
+    //endregion
 
+    //region Private methods
     private boolean isCreatedNotePresented() {
         wait.until(ExpectedConditions.visibilityOf(NOTES_TITLE));
         List<WebElement> rowsPerDate = getDriver().findElements(By.xpath("//td[contains(text(), '" + CommonPage.currentDate() + "')]/.."));
@@ -102,4 +105,7 @@ public class NotesPage extends CommonPage {
     private void clickSaveNoteButton() {
         SEND_NOTE_BTN.click();
     }
+    //endregion
 }
+
+
